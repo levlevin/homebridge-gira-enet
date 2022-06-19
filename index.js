@@ -170,9 +170,10 @@ eNetPlatform.prototype.setupDevices = function() {
 	gw.on('UpdateAvailable', function (obje) {
 		if(this.accessories[obje.NUMBER-16].context.channel == obje.NUMBER) {
 			var newValue= (obje.STATE=== "ON" ? true : false);
-			var service = this.accessories[obje.NUMBER-16].getService(Service.Lightbulb);
+			var service = this.accessories[obje.NUMBER-16].getService(Service.Lightbulb) || this.accessories[obje.NUMBER-16].getService(Service.Switch);
 //			console.log("\r\nChannel: " + obje.NUMBER + " ON-Cache: "+ service.getCharacteristic(Characteristic.On).value + " recv.: "+ obje.STATE + " new value: " + newValue);
 //			console.log("Channel: " + obje.NUMBER + "Bright-Cache: " + service.getCharacteristic(Characteristic.Brightness).value + " recv.: "+ obje.VALUE);
+			if (obje.VALUE == -1) (obje.VALUE = 0);
 			if(service.getCharacteristic(Characteristic.On).value != newValue) service.getCharacteristic(Characteristic.On).updateValue(newValue);
                         if(service.getCharacteristic(Characteristic.Brightness).value != obje.VALUE) service.getCharacteristic(Characteristic.Brightness).updateValue(obje.VALUE);
                         this.accessories[obje.NUMBER-16].realOn = newValue;
